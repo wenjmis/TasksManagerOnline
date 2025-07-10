@@ -82,25 +82,15 @@ TasksManageWeb/
 
 1. **創建並啟動虛擬環境**
 ```bash
-# 使用 Conda
-conda create -n vue-flask-env python=3.9
+# 使用 Conda 如果未創建環境則可以使用下方的指令
+# conda create -n vue-flask-env python=3.9
 conda activate vue-flask-env
-
-# 或使用 venv
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# 或
-venv\Scripts\activate     # Windows
 ```
 
-2. **安裝後端依賴**
+2. **安裝後端套件**
 ```bash
 cd backend
 pip install -r requirements.txt
-```
-
-3. **啟動後端服務**
-```bash
 python app.py
 ```
 
@@ -109,11 +99,17 @@ python app.py
 ### 🎨 前端設置
 
 #### 🟢 使用 Node.js
-
+1. **創建並啟動虛擬環境**
+```bash
+# 使用 Conda 如果未創建環境則可以使用下方的指令
+# conda create -n vue-flask-env python=3.9
+conda activate vue-flask-env
+```
+2. **開啟前端服務**
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run serve
 ```
 
 ## 📡 API 文檔
@@ -337,7 +333,6 @@ chore: 維護性工作
 
 **⭐ 如果這個專案對您有幫助，請給我們一個星星！ ⭐**
 
-![專案標誌](./docs/images/logo.png)
 
 Made with ❤️ by [劉文傑](https://github.com/wenjmis)
 
