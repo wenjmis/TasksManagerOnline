@@ -2,7 +2,7 @@ node_modules/
 __pycache__/
 *.pyc
 .env
-dist/
-*.db
-.DS_Store
+venv/
 .vscode/
+*.db
+*.sqlite
