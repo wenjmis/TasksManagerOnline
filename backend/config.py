@@ -19,19 +19,17 @@ class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
 
 class ProductionConfig(Config):
-    """生產環境配置"""
     DEBUG = False
-    FLASK_ENV = 'production'
-    
-    # 生產環境必須有資料庫 URL
+    # 生產環境必須使用 PostgreSQL
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     
     if not SQLALCHEMY_DATABASE_URI:
         raise ValueError("DATABASE_URL environment variable is required for production")
     
-    # 處理 Heroku PostgreSQL URL 格式問題
+    # 修正 Heroku/Render 的 postgres:// 前綴問題
     if SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
+
 
 class TestConfig(Config):
     """測試環境配置"""
