@@ -1,10 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import axios from 'axios'
-
-// 設定 API 基礎 URL
-axios.defaults.baseURL = 'http://localhost:5000'
+import apiClient from './api/config'
 
 const app = createApp(App)
-app.config.globalProperties.$http = axios
+app.config.globalProperties.$http = apiClient
 app.mount('#app')

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: vue-todo-app
+    env: python
+    buildCommand: "chmod +x build.sh && ./build.sh"
+    startCommand: "cd backend && python app.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
+      - key: FLASK_ENV
+        value: production

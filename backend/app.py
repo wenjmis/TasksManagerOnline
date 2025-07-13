@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from models import Todo, db
 from config import Config
@@ -8,7 +8,10 @@ from dotenv import load_dotenv
 # 載入環境變數
 load_dotenv()
 
-app = Flask(__name__)
+# 修改這裡：指定靜態文件夾為前端打包後的 dist 目錄
+app = Flask(__name__, 
+           static_folder='../frontend/dist', 
+           static_url_path='/')
 
 # 根據環境選擇配置
 if os.environ.get('FLASK_ENV') == 'production':
@@ -16,25 +19,20 @@ if os.environ.get('FLASK_ENV') == 'production':
 else:
     app.config.from_object('config.DevelopmentConfig')
 
-# 設定 CORS
+# 修改 CORS 設定
 if os.environ.get('FLASK_ENV') == 'production':
-    # 生產環境 - 只允許特定來源
-    CORS(app, origins=[
-        'https://taskmanagerVueWeb.vercel.app',  
-        'https://*.vercel.app'  # 允許所有 vercel 子域名
-    ])
+    # 生產環境 - 不需要 CORS，因為前後端同源
+    # CORS(app, origins=[...])  # 註釋掉或刪除
+    pass
 else:
-    # 開發環境 - 允許所有來源
+    # 開發環境 - 保持原設定
     CORS(app)
 
 # 初始化資料庫
 db.init_app(app)
 
-# Flask 2.2+ 不再支援 @app.before_first_request
-# 使用 app.before_request 代替
 @app.before_request
 def create_tables():
-    # 只在第一次請求時建立表格
     if not hasattr(create_tables, 'done'):
         with app.app_context():
             db.create_all()
@@ -45,7 +43,26 @@ def create_tables():
 def health_check():
     return jsonify({'status': 'healthy', 'message': 'API is running'}), 200
 
-# API 路由
+# 添加前端路由處理
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# 處理前端 SPA 路由
+@app.route('/<path:path>')
+def catch_all(path):
+    # 如果是 API 路由，跳過
+    if path.startswith('api/'):
+        return jsonify({'error': 'API endpoint not found'}), 404
+    
+    # 如果是靜態文件存在，返回該文件
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    
+    # 否則返回 index.html (SPA 路由)
+    return send_from_directory(app.static_folder, 'index.html')
+
+# 你的 API 路由 (保持不變)
 @app.route('/api/todos', methods=['GET'])
 def get_todos():
     try:
@@ -59,7 +76,6 @@ def create_todo():
     try:
         data = request.get_json()
         
-        # 驗證必要欄位
         if not data or 'title' not in data:
             return jsonify({'error': 'Title is required'}), 400
         
@@ -108,7 +124,7 @@ def delete_todo(todo_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-# 錯誤處理
+# 錯誤處理 (保持不變)
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
@@ -119,11 +135,9 @@ def internal_error(error):
     return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    # 確保在應用程式上下文中建立表格
     with app.app_context():
         db.create_all()
     
-    # 根據環境設定運行參數
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_ENV') != 'production'
     
