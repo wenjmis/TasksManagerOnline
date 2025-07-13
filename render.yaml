@@ -10,4 +10,4 @@ services:
       - key: FLASK_ENV
         value: production
       - key: DATABASE_URL
-        value: postgresql://postgres:Wenjliu#329@db.lgqiqoxnikupohhnmufi.supabase.co:5432/postgres
+        value: postgresql://postgres:ibqw9FhrTiNQ3k7e@db.lgqiqoxnikupohhnmufi.supabase.co:5432/postgres
