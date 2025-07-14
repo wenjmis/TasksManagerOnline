@@ -3,7 +3,7 @@ import axios from 'axios'
 // API 基礎配置
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
     ? '' // 生產環境使用相對路徑
-    : 'http://localhost:5000/api' // 開發環境使用完整 URL
+    : 'http://localhost:5000/' // 開發環境使用完整 URL
 
 // 創建 axios 實例
 const apiClient = axios.create({

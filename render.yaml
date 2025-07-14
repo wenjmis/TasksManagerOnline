@@ -9,5 +9,3 @@ services:
         value: 3.11.9
       - key: FLASK_ENV
         value: production
-      - key: DATABASE_URL
-        value: postgresql://postgres.lgqiqoxnikupohhnmufi:PSSWW1U9JtiEsfms@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
