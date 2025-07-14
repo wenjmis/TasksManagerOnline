@@ -10,8 +10,9 @@ class Todo(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     completed = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(tz_utc8))
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(tz_utc8), onupdate=lambda: datetime.now(tz_utc8))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(tz_utc8))
+    updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(tz_utc8), onupdate=lambda: datetime.now(tz_utc8))
+
 
     def to_dict(self):
         return {
