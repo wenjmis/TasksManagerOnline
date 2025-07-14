@@ -1,15 +1,17 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
 
 db = SQLAlchemy()
+tz_utc8 = timezone(timedelta(hours=8))
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     completed = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(tz_utc8))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(tz_utc8), onupdate=lambda: datetime.now(tz_utc8))
 
     def to_dict(self):
         return {

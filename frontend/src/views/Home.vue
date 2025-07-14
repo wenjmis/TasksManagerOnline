@@ -25,10 +25,15 @@
     </div>
 
     <TodoList
-      :todos="todos"
+      :todos="sortedTodos"
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
+    <div class="sort-controls">
+      <button @click="toggleSortOrder" class="btn btn-secondary sort-btn">
+        依時間排序：{{ sortOrder === 'asc' ? '最舊優先' : '最新優先' }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -46,13 +51,26 @@ export default {
       newTodo: {
         title: '',
         description: ''
-      }
+      },
+      sortOrder: 'desc' // 'asc' 或 'desc'
     }
   },
   async mounted() {
     await this.fetchTodos()
   },
+  computed: {
+    sortedTodos() {
+      return [...this.todos].sort((a, b) => {
+        const timeA = new Date(a.created_at );
+        const timeB = new Date(b.created_at );
+        return this.sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
+      });
+    }
+  },
   methods: {
+    toggleSortOrder() {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    },
     async fetchTodos() {
       try {
         const response = await this.$http.get('/api/todos')
@@ -145,4 +163,27 @@ export default {
 .btn-primary:hover {
   background-color: #369970;
 }
+.sort-controls {
+  margin-top: 20px;
+  text-align: center;
+  padding: 15px;
+  border-top: 1px solid #eee;
+}
+
+.sort-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sort-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
 </style>
